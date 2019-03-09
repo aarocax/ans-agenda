@@ -1,0 +1,6 @@
+vendor/
+logs/
+classes/ansAgendaConfig.php
+classes/PayRedsys.php
+ans-agenda-cron.php
+
