@@ -67,124 +67,140 @@ $(function () {
     getHours();
   });
 
+  // Validación campos on-time
+  $('#reg-form').on('keyup', 'input#name', function(e){
+    verifyName(this.value);
+  });
+
+  $('#reg-form').on('keyup', 'input#email', function(e){
+    verifyEmail(this.value);
+  })
+
+  $('#reg-form').on('keyup', 'input#phone', function(e){
+    verifyPhone(this.value);
+  });
+
   // Submit formulario de toma de datos
   $("#submit-button").on('click', function(e){
     e.preventDefault();
     
-    $('#form-data').hide();
-    $('#resevating').show();
-    $('#service-title strong').html('Reservando la cita...');
+    if (verifyFormFields()) {
 
-    var data = {
-      'name': $("#reg-form #name").val(),
-      'country': $("#reg-form #country").val(),
-      'email': $("#reg-form #email").val(),
-      'phone': $("#reg-form #phone").val(),
-      'date': $("#reg-form #date").val(),
-      'hour': $("#reg-form #hour").val(),
-      'customer_hour': $("#reg-form #customer_hour").val(),
-      'customer_timezone': $("#reg-form #customer_timezone").val(),
-      'amount': $("#reg-form #price").val(),
-      'pay_mode': $("input[name='pay_mode']:checked").val(),
-    }
-   
-    $('#confirm-data #confirm-data-name span').html(data.name);
-    $('#confirm-data #confirm-data-country span').html(data.country);
-    $('#confirm-data #confirm-data-email span').html(data.email);
-    $('#confirm-data #confirm-data-phone span').html(data.phone);
-    $('#confirm-data #confirm-data-date span').html(data.date);
-    $('#confirm-data #confirm-data-hour span').html(data.customer_hour.substr(0,5));
-    $('#confirm-data #confirm-data-amount span').html(data.amount);
-    $('#confirm-data #confirm-data-pay-mode span').html(data.pay_mode);
+      $('#form-data').hide();
+      $('#resevating').show();
+      $('#service-title strong').html('Reservando la cita...');
 
-    if (data.pay_mode === "visa") {
-      //generateVisaForm(data.amount);
-      $.post(
-        PT_Ajax.ajaxurl, {
-          action: 'ansapp_ajax_redsys_pay',
-          amount: data.amount,
-          nonce: PT_Ajax.nonce
-        },
-        function(response) {
-          $('#pay-form').html(response);
-          document.getElementById("form-data").style.display = "none";
-          document.getElementById("confirm-data").style.display = "block";
-        }
-      )
-      .done(function(){
-      });
-    } else if (data.pay_mode === "paypal") {
-      // pay vía paypal obtain paypal url
-      $.post(
-        PT_Ajax.ajaxurl, {
-          action: 'ansapp_ajax_paypal_pay',
-          amount: data.amount,
-          nonce: PT_Ajax.nonce
-        },
-        function(r) {
-          var resp = JSON.parse(r);
-          var formMessages = $('#form-messages');
-          var data = {
-            'payment_id': resp.payment_id,
-            'name': $("#reg-form #name").val(),
-            'country': $("#reg-form #country").val(),
-            'email': $("#reg-form #email").val(),
-            'phone': $("#reg-form #phone").val(),
-            'date': $("#reg-form #date").val(),
-            'hour': $("#reg-form #hour").val(),
-            'customer_hour': $("#reg-form #customer_hour").val(),
-            'customer_timezone': $("#reg-form #customer_timezone").val(),
-            'amount': $("#reg-form #price").val(),
-            'pay_mode': $("input[name='pay_mode']:checked").val(),
-          }
-         
-          saveData(data, resp.payment_id, function(){
-            $('#pay-form').html(resp.form);
+      var data = {
+        'name': $("#reg-form #name").val(),
+        'country': $("#reg-form #country").val(),
+        'email': $("#reg-form #email").val(),
+        'phone': $("#reg-form #phone").val(),
+        'date': $("#reg-form #date").val(),
+        'hour': $("#reg-form #hour").val(),
+        'customer_hour': $("#reg-form #customer_hour").val(),
+        'customer_timezone': $("#reg-form #customer_timezone").val(),
+        'amount': $("#reg-form #price").val(),
+        'pay_mode': $("input[name='pay_mode']:checked").val(),
+      }
+     
+      $('#confirm-data #confirm-data-name span').html(data.name);
+      $('#confirm-data #confirm-data-country span').html(data.country);
+      $('#confirm-data #confirm-data-email span').html(data.email);
+      $('#confirm-data #confirm-data-phone span').html(data.phone);
+      $('#confirm-data #confirm-data-date span').html(data.date);
+      $('#confirm-data #confirm-data-hour span').html(data.customer_hour.substr(0,5));
+      $('#confirm-data #confirm-data-amount span').html(data.amount);
+      $('#confirm-data #confirm-data-pay-mode span').html(data.pay_mode);
+
+      if (data.pay_mode === "visa") {
+        //generateVisaForm(data.amount);
+        $.post(
+          PT_Ajax.ajaxurl, {
+            action: 'ansapp_ajax_redsys_pay',
+            amount: data.amount,
+            nonce: PT_Ajax.nonce
+          },
+          function(response) {
+            $('#pay-form').html(response);
             document.getElementById("form-data").style.display = "none";
             document.getElementById("confirm-data").style.display = "block";
-            $('#resevating').hide();
-            $('#service-title strong').html('Cita reservada');
-          });
-        }
-      )
-      .done(function(){
-      });
-    } else {
-      // Pago por transferencia
-      $.post(
-        PT_Ajax.ajaxurl, {
-          action: 'ansapp_ajax_transferencia_pay',
-          amount: data.amount,
-          nonce: PT_Ajax.nonce
-        },
-        function(r) {
-          var resp = JSON.parse(r);
-          var formMessages = $('#form-messages');
-          var data = {
-            'payment_id': resp.payment_id,
-            'name': $("#reg-form #name").val(),
-            'country': $("#reg-form #country").val(),
-            'email': $("#reg-form #email").val(),
-            'phone': $("#reg-form #phone").val(),
-            'date': $("#reg-form #date").val(),
-            'hour': $("#reg-form #hour").val(),
-            'customer_hour': $("#reg-form #customer_hour").val(),
-            'customer_timezone': $("#reg-form #customer_timezone").val(),
-            'amount': $("#reg-form #price").val(),
-            'pay_mode': $("input[name='pay_mode']:checked").val(),
           }
+        )
+        .done(function(){
+        });
+      } else if (data.pay_mode === "paypal") {
+        // pay vía paypal obtain paypal url
+        $.post(
+          PT_Ajax.ajaxurl, {
+            action: 'ansapp_ajax_paypal_pay',
+            amount: data.amount,
+            nonce: PT_Ajax.nonce
+          },
+          function(r) {
+            var resp = JSON.parse(r);
+            var formMessages = $('#form-messages');
+            var data = {
+              'payment_id': resp.payment_id,
+              'name': $("#reg-form #name").val(),
+              'country': $("#reg-form #country").val(),
+              'email': $("#reg-form #email").val(),
+              'phone': $("#reg-form #phone").val(),
+              'date': $("#reg-form #date").val(),
+              'hour': $("#reg-form #hour").val(),
+              'customer_hour': $("#reg-form #customer_hour").val(),
+              'customer_timezone': $("#reg-form #customer_timezone").val(),
+              'amount': $("#reg-form #price").val(),
+              'pay_mode': $("input[name='pay_mode']:checked").val(),
+            }
+           
+            saveData(data, resp.payment_id, function(){
+              $('#pay-form').html(resp.form);
+              document.getElementById("form-data").style.display = "none";
+              document.getElementById("confirm-data").style.display = "block";
+              $('#resevating').hide();
+              $('#service-title strong').html('Cita reservada');
+            });
+          }
+        )
+        .done(function(){
+        });
+      } else {
+        // Pago por transferencia
+        $.post(
+          PT_Ajax.ajaxurl, {
+            action: 'ansapp_ajax_transferencia_pay',
+            amount: data.amount,
+            nonce: PT_Ajax.nonce
+          },
+          function(r) {
+            var resp = JSON.parse(r);
+            var formMessages = $('#form-messages');
+            var data = {
+              'payment_id': resp.payment_id,
+              'name': $("#reg-form #name").val(),
+              'country': $("#reg-form #country").val(),
+              'email': $("#reg-form #email").val(),
+              'phone': $("#reg-form #phone").val(),
+              'date': $("#reg-form #date").val(),
+              'hour': $("#reg-form #hour").val(),
+              'customer_hour': $("#reg-form #customer_hour").val(),
+              'customer_timezone': $("#reg-form #customer_timezone").val(),
+              'amount': $("#reg-form #price").val(),
+              'pay_mode': $("input[name='pay_mode']:checked").val(),
+            }
 
-          saveData(data, data.payment_id, function(){
-            $('#pay-form').html(resp.form);
-            document.getElementById("form-data").style.display = "none";
-            document.getElementById("confirm-data").style.display = "block";
-            $('#resevating').hide();
-            $('#service-title strong').html('Cita reservada');
-          });
-        }
-      )
-      .done(function(){
-      });
+            saveData(data, data.payment_id, function(){
+              $('#pay-form').html(resp.form);
+              document.getElementById("form-data").style.display = "none";
+              document.getElementById("confirm-data").style.display = "block";
+              $('#resevating').hide();
+              $('#service-title strong').html('Cita reservada');
+            });
+          }
+        )
+        .done(function(){
+        });
+      }
     }
   });
 
@@ -328,5 +344,96 @@ $(function () {
       console.log(error);
     });
   }
+
+  function verifyName(value) {
+    var error_name = $('#error_name');
+    var test = value.length != 0;
+    if (test) {
+      error_name.html("");
+      error_name.hide();
+    } else {
+      error_name.html("El campo nombre no puede estar vacío");
+      error_name.show();
+    }
+    return test;
+  }
+
+  function  verifyEmail(value) {
+    var emailRegExp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+    var error_email = $('#error-email');
+    var test = value.length === 0 || emailRegExp.test(value);
+    if (test) {
+      error_email.html("");
+      error_email.hide();
+    } else {
+      error_email.html("Teclea un email válido");
+      error_email.show();
+    }
+    return test;
+  }
+
+  function verifyEmailEmpty(value) {
+    var error_email = $('#error-email');
+    var test = value.length != 0;
+    if (test) {
+      error_email.html("");
+      error_email.hide();
+    } else {
+      error_email.html("Teclea un email válido");
+      error_email.show();
+    }
+    return test;
+  }
+
+  function verifyPhone(value) {
+    var telefonoRegExp = /^\d{9}$/;
+    var error_telefono = $('#error_phone');
+    var test = value.length != 0 && telefonoRegExp.test(value);
+    if (test) {
+      error_telefono.html("");
+      error_telefono.hide();
+    } else {
+      error_telefono.html("Teclea un número de teléfono válido");
+      error_telefono.show();
+    }
+    return test;
+  }
+
+  function verifyRadios() {
+    var check = true;
+    var error_radios = $('#error_radios');
+    $('#reg-form input:radio').each(function(){
+      var name = $(this).attr("name");
+      if($("input:radio[name="+name+"]:checked").length == 0){
+        var exist = fail.some(function(e){
+          return e === name;
+        });
+        if(!exist) {
+          check = false;
+        }
+      }
+    });
+    if (check) {
+      error_radios.html("");
+      error_radios.hide();
+    } else {
+      error_radios.html("Selecciona una forma de pago");
+      error_radios.show();
+    }
+    return check;
+  }
+
+  function verifyFormFields() {
+    var email = $('#reg-form input#email').val();
+    var test_email = verifyEmail(email);
+    var test_email_empty = verifyEmailEmpty(email);
+    var name = $('#reg-form input#name').val();
+    var test_name = verifyName(name);
+    var phone = $('#reg-form input#phone').val();
+    var test_phone = verifyPhone(phone);
+    var test_radios = verifyRadios();
+    return (test_email && test_email_empty && test_name && test_phone && test_radios);
+  }
+
 
 });
