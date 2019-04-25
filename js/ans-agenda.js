@@ -166,7 +166,42 @@ $(function () {
         });
       } else {
         // Pago por transferencia
-        window.location.href = "http://xanatarot.com";
+        window.location.href = "http://xanatarot.com/cita-pago-por-transferencia/";
+        
+        // $.post(
+        //   PT_Ajax.ajaxurl, {
+        //     action: 'ansapp_ajax_transferencia_pay',
+        //     amount: data.amount,
+        //     nonce: PT_Ajax.nonce
+        //   },
+        //   function(r) {
+        //     var resp = JSON.parse(r);
+        //     var formMessages = $('#form-messages');
+        //     var data = {
+        //       'payment_id': resp.payment_id,
+        //       'name': $("#reg-form #name").val(),
+        //       'country': $("#reg-form #country").val(),
+        //       'email': $("#reg-form #email").val(),
+        //       'phone': $("#reg-form #phone").val(),
+        //       'date': $("#reg-form #date").val(),
+        //       'hour': $("#reg-form #hour").val(),
+        //       'customer_hour': $("#reg-form #customer_hour").val(),
+        //       'customer_timezone': $("#reg-form #customer_timezone").val(),
+        //       'amount': $("#reg-form #price").val(),
+        //       'pay_mode': $("input[name='pay_mode']:checked").val(),
+        //     }
+
+        //     saveData(data, data.payment_id, function(){
+        //       $('#pay-form').html(resp.form);
+        //       document.getElementById("form-data").style.display = "none";
+        //       document.getElementById("confirm-data").style.display = "block";
+        //       $('#resevating').hide();
+        //       $('#service-title strong').html('Cita reservada');
+        //     });
+        //   }
+        // )
+        // .done(function(){
+        // });
       }
     }
   });

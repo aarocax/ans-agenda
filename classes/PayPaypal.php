@@ -31,7 +31,7 @@ class PayPaypal {
 
     $apiContext->setConfig(
         array(
-          'mode' => 'sandbox',
+          'mode' => ansAgendaConfig::$mode,
           'log.LogEnabled' => true,
           'log.FileName' =>  __DIR__.'/../logs/PayPal.log',
           'log.LogLevel' => 'DEBUG', // PLEASE USE `INFO` LEVEL FOR LOGGING IN LIVE ENVIRONMENTS

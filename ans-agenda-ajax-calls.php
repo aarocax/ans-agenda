@@ -221,7 +221,35 @@ function ansapp_ajax_transferencia_pay() {
 
 	$amount = $_POST['amount'];
 
-	
+	$cart = array(
+		'amount' => $amount,
+		'description' => 'servicio tarot',
+		'currency' => 'EUR',
+		'quantity' => 1,
+	);
+
+	// $payment = PayPaypal::payment($cart);
+
+	// $transactions = $payment->getTransactions();
+
+ //  $transaction = $transactions[0];
+
+ //  $approvalUrl = $payment->getApprovalLink();
+
+	$approvalUrl = "http://example.com";
+
+  $form  = '{"form":"';
+	$form .= '<form id=\"\" name=\"frm\" action=\"\" method=\"POST\">';
+	$form .=  '<div class=\"row\">';
+	$form .=   '<div class=\"col-2\">';
+	$form .=    '<input id=\"return-form\" type=\"button\" class=\"btn btn-secondary\" value=\"Volver\">';
+	$form .=   '</div>';
+	$form .=   '<div class=\"col-4\">';
+	$form .=    '<a href=\"'.$approvalUrl.'\" class=\"btn btn-orange\" id=\"paypal-pay-submit\">Pagar</a>';
+	$form .=   '</div>';
+	$form .=  '</div>';
+	$form .= '</form>",';
+	$form .= '"payment_id":"123456"}';
 
 	echo $form;
 

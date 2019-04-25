@@ -30,9 +30,13 @@ register_activation_hook(__FILE__, array($ans_agenda_plugin,'install') );
 
 function ansapp_scripts() {
 
-	wp_enqueue_style( 'jquery-ui-css', plugins_url( '/js/jquery-ui-1.12.1/jquery-ui.min.css', __FILE__ ), false,'1.1','all');
+	//wp_enqueue_style( 'jquery-ui-css', plugins_url( '/js/jquery-ui-1.12.1/jquery-ui.min.css', __FILE__ ), false,'1.1','all');
 
-	wp_enqueue_script( 'jquery-ui-js', plugins_url( '/js/jquery-ui-1.12.1/jquery-ui.min.js', __FILE__ ), array('jquery'), '20151215', true );
+	wp_enqueue_style( 'jquery-ui-css', 'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css', false,'1.1','all');
+
+	//wp_enqueue_script( 'jquery-ui-js', plugins_url( '/js/jquery-ui-1.12.1/jquery-ui.min.js', __FILE__ ), array('jquery'), '20151215', true );
+
+	wp_enqueue_script( 'jquery-ui-js', 'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js', array('jquery'), '20151215', true );
 
 	wp_enqueue_script( 'jquery-ui-js-es', plugins_url( '/js/jquery-ui-1.12.1/datepicker-es.js', __FILE__ ), array('jquery'), '20151215', true );
 
